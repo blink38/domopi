@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report>
+  <date>09/08/2013 10:52:25</date>
+  <sensors>
+    <sensor>
+      <name>temp1</name>
+      <value>24.062</value>
+      <id>28-0000041cdf0a</id>
+      <type>ds18b20</type>
+      <description>air neuf avant</description>
+    </sensor>
+    <sensor>
+      <name>temp2</name>
+      <value>24.062</value>
+      <id>28-0000041cb50c</id>
+      <type>ds18b20</type>
+      <description>air neuf apres</description>
+    </sensor>
+    <sensor>
+      <name>temp3</name>
+      <value>23.312</value>
+      <id>28-000004c577ec</id>
+      <type>ds18b20</type>
+      <description>air vicie avant</description>
+    </sensor>
+    <sensor>
+      <name>temp4</name>
+      <value>24.375</value>
+      <id>28-0000041d047b</id>
+      <type>ds18b20</type>
+      <description>air vicie apres</description>
+    </sensor>
+  </sensors>
+  <programs>
+    <program>
+      <name>Programme Été</name>
+      <description>Programme qui fait tourner la VMC afin de rafraichir la maison</description>
+      <id>0</id>
+      <active>1</active>
+      <used>1</used>
+      <daysofweek>
+        <day>1</day>
+        <day>2</day>
+        <day>3</day>
+        <day>4</day>
+        <day>5</day>
+        <day>6</day>
+        <day>7</day>
+      </daysofweek>
+      <events>
+        <event>
+          <debut>00:00</debut>
+          <fin>23:59</fin>
+          <mode>0</mode>
+          <priority>5</priority>
+          <id>1</id>
+          <used>1</used>
+        </event>
+        <event>
+          <debut>*:10</debut>
+          <fin>*:20</fin>
+          <mode>101</mode>
+          <priority>1</priority>
+          <id>2</id>
+          <used>0</used>
+        </event>
+        <event>
+          <debut>*:40</debut>
+          <fin>*:50</fin>
+          <mode>101</mode>
+          <priority>1</priority>
+          <id>3</id>
+          <used>0</used>
+        </event>
+        <event>
+          <debut>21:10</debut>
+          <fin>08:00</fin>
+          <mode>101</mode>
+          <priority>2</priority>
+          <id>4</id>
+          <used>0</used>
+        </event>
+      </events>
+    </program>
+    <program>
+      <name>Program 2</name>
+      <description>Programme pour l'hivers (week-end)</description>
+      <id>1</id>
+      <active>1</active>
+      <used>0</used>
+      <daysofweek>
+        <day>6</day>
+        <day>7</day>
+      </daysofweek>
+      <events>
+        <event>
+          <debut>08:01</debut>
+          <fin>16:00</fin>
+          <mode>0</mode>
+          <id>5</id>
+          <used>0</used>
+        </event>
+        <event>
+          <debut>10:01</debut>
+          <fin>16:00</fin>
+          <mode>1</mode>
+          <id>6</id>
+          <used>0</used>
+        </event>
+      </events>
+    </program>
+    <program>
+      <name>Program 3</name>
+      <description>Programme pour l'été (début semaine)</description>
+      <id>2</id>
+      <active>1</active>
+      <used>0</used>
+      <daysofweek>
+        <day>1</day>
+        <day>2</day>
+      </daysofweek>
+      <events>
+        <event>
+          <debut>22:01</debut>
+          <fin>23:00</fin>
+          <mode>0</mode>
+          <id>7</id>
+          <used>0</used>
+        </event>
+        <event>
+          <debut>20:01</debut>
+          <fin>21:46</fin>
+          <mode>1</mode>
+          <id>8</id>
+          <used>0</used>
+        </event>
+        <event>
+          <debut>21:21</debut>
+          <fin>01:10</fin>
+          <mode>1</mode>
+          <id>9</id>
+          <used>0</used>
+        </event>
+        <event>
+          <debut>23:21</debut>
+          <fin>22:10</fin>
+          <mode>1</mode>
+          <id>10</id>
+          <used>0</used>
+        </event>
+        <event>
+          <debut>01:21</debut>
+          <fin>22:10</fin>
+          <mode>1</mode>
+          <id>11</id>
+          <used>0</used>
+        </event>
+      </events>
+    </program>
+  </programs>
+  <modes>
+    <temperature_approx>0.5</temperature_approx>
+    <actionpriority>
+      <priority value="0" action="off"/>
+      <priority value="1" action="on1"/>
+      <priority value="2" action="on2"/>
+    </actionpriority>
+    <mode>
+      <id>0</id>
+      <description>mode été</description>
+      <used>1</used>
+      <conditions>
+        <condition>
+          <type>cond_sup</type>
+          <action>on1</action>
+          <priority>5</priority>
+          <description>si la t° intérieure est supérieur à la t° de soufflage, alors on fait tourner la VMC (pour rafraichir)</description>
+          <id>1</id>
+          <t1>23.312</t1>
+          <t2>24.062</t2>
+          <used>0</used>
+        </condition>
+        <condition>
+          <type>cond_sup</type>
+          <action>on1</action>
+          <priority>5</priority>
+          <description>si la t° de soufflage est inférieure à 23°C, alors on fait tourner la VMC</description>
+          <id>2</id>
+          <t1>23</t1>
+          <t2>24.062</t2>
+          <used>0</used>
+        </condition>
+        <condition>
+          <type>cond_sup</type>
+          <action>on1</action>
+          <priority>5</priority>
+          <description>si la t° extérieure est inférieure à 25°C, alors on fait tourner la VMC</description>
+          <id>3</id>
+          <t1>25</t1>
+          <t2>24.062</t2>
+          <used>1</used>
+        </condition>
+        <condition>
+          <type>cond_sup</type>
+          <action>off</action>
+          <priority>5</priority>
+          <description>l'entrée d'air neuf dans la VMC ne doit pas dépasser 30°C</description>
+          <id>4</id>
+          <t1>24.062</t1>
+          <t2>30</t2>
+          <used>0</used>
+        </condition>
+        <condition>
+          <type>cond_sup</type>
+          <action>off</action>
+          <priority>5</priority>
+          <description>la VMC ne doit pas souffler de l'air à plus de 28°C</description>
+          <id>5</id>
+          <t1>24.062</t1>
+          <t2>28</t2>
+          <used>0</used>
+        </condition>
+      </conditions>
+    </mode>
+    <mode>
+      <id>101</id>
+      <description>VMC allumée - vitesse 1</description>
+      <used>0</used>
+      <conditions>
+        <condition>
+          <type>cond_force</type>
+          <action>on1</action>
+          <priority>1</priority>
+          <description>allumée vitesse 1</description>
+          <id>6</id>
+          <used>0</used>
+        </condition>
+      </conditions>
+    </mode>
+    <mode>
+      <id>1</id>
+      <description>mode hivers 2</description>
+      <used>0</used>
+      <conditions>
+        <condition>
+          <type>cond_sup</type>
+          <action>on1</action>
+          <priority>5</priority>
+          <description>température extérieure &gt; température intérieure</description>
+          <id>7</id>
+          <t1>24.062</t1>
+          <t2>23.312</t2>
+          <used>0</used>
+        </condition>
+        <condition>
+          <type>cond_sup</type>
+          <action>off</action>
+          <priority>5</priority>
+          <description>température vers l'intérieur &gt; température intérieure</description>
+          <id>8</id>
+          <t1>24.062</t1>
+          <t2>23.312</t2>
+          <used>0</used>
+        </condition>
+        <condition>
+          <type>cond_sup</type>
+          <action>on2</action>
+          <priority>5</priority>
+          <description>température vers l'intérieur doit être inférieure à 25</description>
+          <id>9</id>
+          <t1>24.062</t1>
+          <t2>25</t2>
+          <used>0</used>
+        </condition>
+      </conditions>
+    </mode>
+  </modes>
+  <actions>
+    <action>
+      <name>on1</name>
+      <description>allumage vitesse 1 de la VMC</description>
+      <id>1</id>
+      <used>1</used>
+      <gpios>
+        <gpio>
+          <name>5</name>
+          <value>off</value>
+        </gpio>
+        <gpio>
+          <name>6</name>
+          <value>off</value>
+        </gpio>
+      </gpios>
+    </action>
+    <action>
+      <name>on2</name>
+      <description>allumage vitesse 2 de la VMC</description>
+      <id>2</id>
+      <used>0</used>
+      <gpios>
+        <gpio>
+          <name>5</name>
+          <value>on</value>
+        </gpio>
+        <gpio>
+          <name>6</name>
+          <value>on</value>
+        </gpio>
+      </gpios>
+    </action>
+    <action>
+      <name>off</name>
+      <description>arrêt de la VMC</description>
+      <id>3</id>
+      <used>0</used>
+      <gpios>
+        <gpio>
+          <name>5</name>
+          <value>on</value>
+        </gpio>
+        <gpio>
+          <name>6</name>
+          <value>off</value>
+        </gpio>
+      </gpios>
+    </action>
+  </actions>
+</report>

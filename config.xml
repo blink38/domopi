@@ -1,0 +1,554 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+
+	<debug>
+		<class name="w1TempSensorManager" level="INFO" libelle="sondes de température" />
+		<class name="ProgramManager" level="DEBUG" libelle="gestionnaire des programmes" />
+		<class name="ActionManager" level="DEBUG" libelle="gestionnaire des actions" />
+		<class name="ModeManager" level="DEBUG" libelle="gestionnaire des modes" />
+		<class name="GPIOManager" level="DEBUG" libelle="gestionnaire des GPIOs" />		
+	</debug>
+	
+	<statistics>
+		<path>/data/stats/</path>
+	</statistics>
+	
+	<sensors>
+		<w1_temp_cfg>
+			<path>/sys/devices/w1_bus_master1/</path>
+			<slaves_list>w1_master_slaves</slaves_list>
+			<slave_data>w1_slave</slave_data>
+		</w1_temp_cfg>
+		
+		<w1_temp_sensor>
+			<name>temp1</name>
+			<id>28-00000520a04c</id>
+			<description>air neuf avant</description>
+			<type>ds18b20</type>
+		</w1_temp_sensor>
+		
+		<w1_temp_sensor>
+			<name>temp2</name>
+			<id>28-000005204303</id>
+			<description>air neuf apres</description>
+			<type>ds18b20</type>
+		</w1_temp_sensor>
+		
+		<w1_temp_sensor>
+			<name>temp3</name>
+			<id>28-0000052024dd</id>
+			<description>air vicie avant</description>
+			<type>ds18b20</type>
+		</w1_temp_sensor>
+		
+		<w1_temp_sensor>
+			<name>temp4</name>
+			<id>28-000005214953</id>
+			<description>air vicie apres</description>
+			<type>ds18b20</type>
+		</w1_temp_sensor>
+
+		<w1_temp_sensor>
+			<name>temp5</name>
+			<id>28-00000520d442</id>
+			<description>combles</description>
+			<type>ds18b20</type>
+		</w1_temp_sensor>
+
+	</sensors>
+
+	
+	<actions>
+		<action>
+			<name>on1</name>
+			<description>allumage vitesse 1 de la VMC</description>
+			<gpio name="5" value="off"></gpio>
+			<gpio name="6" value="off"></gpio>
+		</action>
+
+		<action>
+			<name>on2</name>
+			<description>allumage vitesse 2 de la VMC</description>
+			<gpio name="5" value="on"></gpio>
+			<gpio name="6" value="on"></gpio>
+		</action>
+
+		<action>
+			<name>off</name>
+			<description>arrêt de la VMC</description>
+			<gpio name="5" value="on"></gpio>
+			<gpio name="6" value="off"></gpio>
+		</action>
+		
+	</actions>
+	
+	
+	<gpios>
+		<path>/usr/local/bin/gpio</path>
+		
+		<gpio>
+			<id>5</id>
+			<description>VMC vitesse 1</description>
+			<default>off</default>
+		</gpio>
+		
+		<gpio>
+			<id>6</id>
+			<description>VMC vitesse 2</description>
+			<default>off</default>
+		</gpio>
+	</gpios>
+	<!-- 
+	mode 0 :
+		
+	-->
+	<modes>
+		<actionpriority>off,on1,on2</actionpriority>
+		<temperature_approx>0.5</temperature_approx>
+		
+		
+		<mode>
+			<id>0</id>
+			<description>mode été</description>
+
+			<conditions>
+				<sup>
+					<t1 sensor="temp1" />
+					<t2 temp="30" />
+					<action>off</action>
+					<priority>1</priority>
+					<description>si la température extérieure est supérieur à 30°C, on éteint la VMC</description>
+				</sup>
+
+				<sup>
+					<t1 sensor="temp3" />
+					<t2 sensor="temp2" />
+					<action>on1</action>
+					<priority>5</priority>
+					<description>si la t° intérieure est supérieur à la t° de soufflage, alors on fait tourner la VMC (pour rafraichir)</description>
+				</sup>
+				
+				<sup>
+					<t1 temp="23" />
+					<t2 sensor="temp2" />
+					<action>on1</action>
+					<priority>5</priority>
+					<description>si la t° de soufflage est inférieure à 23°C, alors on fait tourner la VMC</description>
+				</sup>
+				
+				<sup>
+					<t1 temp="25" />
+					<t2 sensor="temp1" />
+					<action>on1</action>
+					<priority>5</priority>
+					<description>si la t° extérieure est inférieure à 25°C, alors on fait tourner la VMC</description>
+				</sup>
+				
+				<sup>
+					<t1 sensor="temp1" />
+					<t2 temp="30" />
+					<action>off</action>
+					<priority>5</priority>
+					<description>l'entrée d'air neuf dans la VMC ne doit pas dépasser 30°C</description>
+				</sup>
+				
+				<sup>
+					<t1 sensor="temp2" />
+					<t2 temp="28" />
+					<action>off</action>
+					<priority>5</priority>
+					<description>la VMC ne doit pas souffler de l'air à plus de 28°C</description>
+				</sup>
+			</conditions>
+		</mode>
+		
+		<mode>
+			<id>1</id>
+			<description>mode automne</description>
+			
+                        <conditions>
+                                <sup>
+                                        <t1 temp="17" />
+                                        <t2 sensor="temp2" />
+                                        <action>off</action>
+                                        <priority>1</priority>
+                                        <description>si la t° de soufflage est inférieure à 17°C, alors on arrête la VMC</description>
+                                </sup>
+
+
+				<sup>
+					<t1 temp="13" />
+					<t2 sendor="temp1" />
+					<action>off</action>
+					<priority>1</priority>
+					<description>si la t° extérieur est inférieure à 13°C, alors on arrête la VMC</description>
+				</sup>	
+			</conditions>
+		</mode>
+
+		<mode>
+			<id>3</id>
+			<description>mode automne - apport chaleur</description>
+
+			<conditions>
+				<sup>
+					<t1 sensor="temp2" />
+					<t2 temp="19" />
+					<action>on2</action>
+					<priority>1</priority>
+					<description>si la t° de soufflage est supérieure à 19°C, alors on allume la VMC à la vitesse 2</description>
+				</sup>
+
+
+				<sup>
+					<t1 sensor="temp1" />
+					<t2 temp="21" />
+					<action>on1</action>
+                                        <priority>2</priority>
+                                        <description>si la t° extérieur est supérieure à 21°C, alors on allume la VMC à la vitesse 1</description>
+				</sup>
+			</conditions>
+		</mode>
+
+		<mode>
+			<id>4</id>
+			<description>mode automne-hivers - apport chaleur</description>
+
+			<conditions>
+				<sup>
+					<t1 sensor="temp2" />
+					<t2 temp="temp3" />
+					<action>on1</action>
+					<priority>1</priority>
+					<description>si la t° de soufflage est supérieure à la température intérieure, alors on allume la VMC à la vitesse 1</description>
+				</sup>
+
+
+				<sup>
+					<t1 sensor="temp2" />
+					<t2 temp="21"/>
+					<action>on2</action>
+                                        <priority>2</priority>
+                                        <description>si la t° de soufflage est supérieure à 21°C, alors on allume la VMC à la vitesse 2</description>
+				</sup>
+			</conditions>
+		</mode>
+
+		<mode>
+			<id>101</id>
+			<description>VMC allumée - vitesse 1</description>
+			
+			<conditions>
+				<force>
+					<action>on1</action>
+					<priority>1</priority>
+					<description>allumée vitesse 1</description>
+				</force>
+			</conditions>
+		</mode>
+		
+		<mode>
+			<id>102</id>
+			<description>VMC eteinte - trop chaud</description>
+			
+			<conditions>
+				<sup>
+					<t1 sensor="temp2" />
+					<t2 temp="35" />
+					<action>off</action>
+					<description>air trop chaud - éteinte</description>
+					<priority>1</priority>
+				</sup>
+			</conditions>
+		</mode>
+	
+		<mode>
+			<id>2</id>
+			<description>mode hivers</description>
+
+			<conditions>
+				<sup>
+					<t1 sensor="temp1" />
+					<t2 sensor="temp3" />
+					<action>on1</action>
+					<priority>5</priority>
+					<description>température extérieure > température intérieure</description>
+				</sup>
+				<sup>
+					<t1 sensor="temp2" />
+					<t2 sensor="temp3" />
+					<action>off</action>
+					<priority>5</priority>
+					<description>température vers l'intérieur > température intérieure</description>
+				</sup>
+				<sup>
+					<t1 sensor="temp2" />
+					<t2 temp="25" />
+					<action>on2</action>
+					<priority>5</priority>
+					<description>température vers l'intérieur doit être inférieure à 25</description>
+				</sup>
+			</conditions>
+		</mode>
+		<mode>
+			<id>6</id>
+			<description>mode été - simple - VMC éteinte si trop chaud</description>
+
+			<conditions>
+				<sup>
+					<t1 sensor="temp1" />
+					<t2 temp="30" />
+					<action>off</action>
+					<priority>1</priority>
+					<description>si la température extérieure est supérieur à 30°C, on éteint la VMC</description>
+				</sup>
+
+				<sup>
+					<t1 sensor="temp1" />
+					<t2 temp="30" />
+					<action>off</action>
+					<priority>5</priority>
+					<description>l'entrée d'air neuf dans la VMC ne doit pas dépasser 30°C</description>
+				</sup>
+				
+				<sup>
+					<t1 sensor="temp2" />
+					<t2 temp="28" />
+					<action>off</action>
+					<priority>5</priority>
+					<description>la VMC ne doit pas souffler de l'air à plus de 28°C</description>
+				</sup>
+			</conditions>
+		</mode>
+	</modes>
+
+	<programs>
+
+		<program>
+			<name>Programme Intersaison</name>
+			<description>Programme qui fait tourner la VMC 30 min par heure</description>
+			<id>5</id>
+			<active>false</active>
+			<daysofweek>
+				<dayofweek>1</dayofweek>
+				<dayofweek>2</dayofweek>
+				<dayofweek>3</dayofweek>
+				<dayofweek>4</dayofweek>
+				<dayofweek>5</dayofweek>
+				<dayofweek>6</dayofweek>
+				<dayofweek>7</dayofweek>
+			</daysofweek>
+			
+			<events>
+				<event>
+					<debut>*:10</debut>
+					<fin>*:20</fin>
+					<mode>101</mode>
+					<priority>1</priority>
+				</event>
+
+				<event>
+					<debut>*:40</debut>
+					<fin>*:50</fin>
+					<mode>101</mode>
+					<priority>1</priority>
+				</event>
+				
+		
+				<event>
+					<debut>0:0</debut>
+					<fin>23:59</fin>
+					<mode>6</mode>
+					<priority>5</priority>	
+				0</event>
+			</events>
+		</program>
+		
+		<program>
+			<name>Programme Été</name>
+			<description>Programme qui fait tourner la VMC afin de rafraichir la maison</description>
+			<id>0</id>
+			<active>true</active>
+			<daysofweek>
+				<dayofweek>1</dayofweek>
+				<dayofweek>2</dayofweek>
+				<dayofweek>3</dayofweek>
+				<dayofweek>4</dayofweek>
+				<dayofweek>5</dayofweek>
+				<dayofweek>6</dayofweek>
+				<dayofweek>7</dayofweek>
+			</daysofweek>
+			
+			<events>
+				<event>
+					<debut>0:0</debut>
+					<fin>23:59</fin>
+					<mode>0</mode>
+					<priority>5</priority>
+				</event>
+				
+				<event>
+					<debut>0:0</debut>
+					<fin>23:59</fin>
+					<mode>102</mode>
+					<priority>2</priority>
+				</event>
+
+				<event>
+					<debut>*:10</debut>
+					<fin>*:20</fin>
+					<mode>101</mode>
+					<priority>2</priority>
+				</event>
+
+				<event>
+					<debut>*:40</debut>
+					<fin>*:50</fin>
+					<mode>101</mode>
+					<priority>2</priority>
+				</event>
+				
+				<event>
+					<debut>22:10</debut>
+					<fin>8:00</fin>
+					<mode>101</mode>
+					<priority>3</priority>
+				</event>
+				
+			</events>
+		</program>
+		
+		<program>
+			<name>Programme Hivers</name>
+			<description>Programme pour l'hivers</description>
+			<id>4</id>
+			<active>false</active>
+			<daysofweek>
+				<dayofweek>1</dayofweek>
+				<dayofweek>2</dayofweek>
+				<dayofweek>3</dayofweek>
+				<dayofweek>4</dayofweek>
+				<dayofweek>5</dayofweek>
+				<dayofweek>6</dayofweek>
+				<dayofweek>7</dayofweek>
+			</daysofweek>
+			<events>
+				<event>
+					<debut>9:00</debut>
+					<fin>21:00</fin>
+					<mode>4</mode>
+					<priority>1</priority>
+				</event>
+				
+				<event>
+					<debut>*:05</debut>
+					<fin>*:15</fin>
+					<mode>101</mode>
+					<priority>1</priority>
+				</event>
+				<event>
+					<debut>*:35</debut>
+					<fin>*:45</fin>
+					<mode>101</mode>
+                                        <priority>1</priority>
+                                </event>
+<!--
+				<event>
+					<debut>*:25</debut>
+					<fin>*:35</fin>
+					<mode>101</mode>
+					<priority>1</priority>
+				</event>
+
+				<event>
+					<debut>*:45</debut>
+					<fin>*:55</fin>
+					<mode>101</mode>
+					<priority>1</priority>
+				</event>
+-->
+			</events>
+		</program>
+		<program>
+			<name>Programme Automne</name>
+			<description>Programme pour l'automne</description>
+			<id>1</id>
+			<active>false</active>
+			<daysofweek>
+				<dayofweek>1</dayofweek>
+				<dayofweek>2</dayofweek>
+				<dayofweek>3</dayofweek>
+				<dayofweek>4</dayofweek>
+				<dayofweek>5</dayofweek>
+				<dayofweek>6</dayofweek>
+				<dayofweek>7</dayofweek>
+			</daysofweek>
+			<events>
+				<event>
+					<debut>9:00</debut>
+					<fin>21:00</fin>
+					<mode>3</mode>
+					<priority>1</priority>
+				</event>
+				<event>
+					<debut>0:0</debut>
+					<fin>23:59</fin>
+					<mode>1</mode>
+					<priority>5</priority>
+				</event>
+				
+				<event>
+					<debut>*:10</debut>
+					<fin>*:20</fin>
+					<mode>101</mode>
+					<priority>1</priority>
+				</event>
+
+				<event>
+					<debut>*:40</debut>
+					<fin>*:50</fin>
+					<mode>101</mode>
+					<priority>1</priority>
+				</event>
+			</events>
+		</program>
+		
+		<program>
+			<name>Program 3</name>
+			<description>Programme pour l'été (début semaine)</description>
+			<id>2</id>
+			<active>false</active>
+			<daysofweek>
+				<dayofweek>1</dayofweek>
+				<dayofweek>2</dayofweek>
+			</daysofweek>
+			<events>
+				<event>
+					<debut>22:01</debut>
+					<fin>23:00</fin>
+					<mode>0</mode>
+				</event>
+				<event>
+					<debut>20:01</debut>
+					<fin>21:46</fin>
+					<mode>1</mode>
+				</event>
+				<event>
+					<debut>21:21</debut>
+					<fin>1:10</fin>
+					<mode>1</mode>
+				</event>
+				<event>
+					<debut>23:21</debut>
+					<fin>22:10</fin>
+					<mode>1</mode>
+				</event>
+				<event>
+					<debut>1:21</debut>
+					<fin>22:10</fin>
+					<mode>1</mode>
+				</event>
+			</events>
+		</program>
+	</programs>
+</configuration>
